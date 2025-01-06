@@ -1,6 +1,6 @@
 include("direct-link_mapping.jl")
 
-function playout(sn, vnr, policy, solver::Function, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
+function VNE(sn, vnr, policy, solver::Function, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
     sequence = []
     done::Bool = false
     curr_node = 1
@@ -139,25 +139,7 @@ end
 function default_weight!(policy, key)
     policy[key] = 0
 end
-#=
-function default_weight!(policy, key, distances)
-    if distances == nothing
-        policy[key] = 0
-        return
-    end
-    if key == ""
-        policy[key] = 0
-    else
-        nodes = split(key, ",")
-        k = 0
-        # first "node" is always empty string, last one is the node we are trying to rate
-         for i in nodes[2:end-1]
-            k += distances[parse(Int64, nodes[end])][parse(Int64, i)]
-        end
-        policy[key] = -k / (length(nodes)-1)
-    end
-end
-=#
+
 
 ####################################################################
 ################ HELPER FUNCTIONS USED IN MAIN #####################

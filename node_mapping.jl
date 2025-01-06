@@ -1,6 +1,6 @@
 include("direct-link_mapping.jl")
 
-function playout(sn, vnr, policy, solver::Function, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
+function VNE(sn, vnr, policy, solver::Function, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
     sequence = []
     done::Bool = false
     curr_node = 1
@@ -92,28 +92,39 @@ function bestFitNode(m, vn, vnr, sn)
             if known_host != 0
                 total+=1
                 if m != known_host 
-                    one=true
-                    if has_prop(sn, m, known_host, :BW_max)
-                        available_BW = get_prop(sn, m, known_host, :BW_max) - get_prop(sn, m, known_host, :BW_used)
-                    else 
-                        one=false
-                        available_BW = get_prop(sn,known_host, m, :BW_max) - get_prop(sn, known_host,m, :BW_used)
-                    end
-                    if available_BW >= BW 
-                        good+=1
-                        if haskey(free_bw, known_host)
-                            free_bw[known_host]=+BW
-                        else 
-                            free_bw[known_host]=BW
+                        neighborsList = Set{Int64}()
+                        for neighbor in neighbors(sn, known_host)
+                            push!(neighborsList, neighbor)
                         end
-                        if one == true
-                            set_prop!(sn, m, known_host, :BW_used, get_prop(sn, known_host,m, :BW_used)+BW)
-                        else
-                            set_prop!(sn, known_host, m, :BW_used, get_prop(sn, known_host,m, :BW_used)+BW)
-                        end 
-                    #else
-                     #   return false      
-                    end
+                        neighborsList = collect(neighborsList)
+                        for neighbor in neighborsList
+                            if neighbor==m #Il y'a un lien physique
+
+                                one=true
+                                if has_prop(sn, m, known_host, :BW_max)
+                                    available_BW = get_prop(sn, m, known_host, :BW_max) - get_prop(sn, m, known_host, :BW_used)
+                                else 
+                                    one=false
+                                    available_BW = get_prop(sn,known_host, m, :BW_max) - get_prop(sn, known_host,m, :BW_used)
+                                end
+                                
+                                if available_BW >= BW 
+                                    good+=1
+                                    if haskey(free_bw, known_host)
+                                        free_bw[known_host]=+BW
+                                    else 
+                                        free_bw[known_host]=BW
+                                    end
+                                    if one == true
+                                        set_prop!(sn, m, known_host, :BW_used, get_prop(sn, known_host,m, :BW_used)+BW)
+                                    else
+                                        set_prop!(sn, known_host, m, :BW_used, get_prop(sn, known_host,m, :BW_used)+BW)
+                                    end 
+                                #else
+                                #   return false      
+                                end
+                            end
+                        end
                 else
                     good+=1 #au cas ou m == known host 
                 end

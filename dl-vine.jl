@@ -11,7 +11,7 @@ include("direct-link_mapping.jl")
 include("checks.jl")
 include("node_mapping.jl")
 
-function NRPA(sn::MetaGraph{Int64, Float64},
+function DL_ViNE(sn::MetaGraph{Int64, Float64},
     vnr::MetaGraph{Int64, Float64}, 
     level::Int64, N::Int64, 
     policy::Union{DefaultDict{String, Float64, Float64}, Dict{String, Float64}}, 
@@ -25,16 +25,16 @@ function NRPA(sn::MetaGraph{Int64, Float64},
         # copying is slow
         # we don't use modifications to vnr for reward calculations
         # hence do not copy it as it consumes lots of time
-        # as a result, after NRPA, vnr contains the last calculated embedding, which is not the best one
+        # as a result, after DL_ViNE, vnr contains the last calculated embedding, which is not the best one
 
-        score, sequence = playout(copy_graph(sn), vnr, policy, solver, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
+        score, sequence = VNE(copy_graph(sn), vnr, policy, solver, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
 
         return score, sequence
     else
         best_score::Float64 = -9999
         best_seq = Int64[]
         for i = 1:N
-            reward, sequence = NRPA(sn, vnr, level - 1, N, policy, solver, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
+            reward, sequence = DL_ViNE(sn, vnr, level - 1, N, policy, solver, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
                                     
             if reward > best_score
                 best_score = reward
@@ -50,7 +50,7 @@ function NRPA(sn::MetaGraph{Int64, Float64},
     end
 end
 
-function run_nepa(instance_path,
+function run_dl_vine(instance_path,
              linkPlacement, 
              level,
              N,
@@ -81,7 +81,7 @@ function run_nepa(instance_path,
             instance[slice] = vnr
          
 
-            score,seq =  @time NRPA(sn, vnr, level, N, policy, linkPlacement,max_bw_sn(sn), 
+            score,seq =  @time DL_ViNE(sn, vnr, level, N, policy, linkPlacement,max_bw_sn(sn), 
                             max_bw_vnr(vnr), sum_bw_sn(sn), sum_bw_vnr(vnr))
 
             #println("Peut on utiliser futureSeq ? : $use_futureSeq")
@@ -158,7 +158,7 @@ end
 function main(instance_path, log_file, level, N, seed)
     Random.seed!(seed)
     linkPlacement = place_links_dl
-    t = @elapsed run_nepa(instance_path, linkPlacement, level, N, log_file) 
+    t = @elapsed run_dl_vine(instance_path, linkPlacement, level, N, log_file) 
     open(log_file,"a") do io
         println(io, ",", t)
     end
