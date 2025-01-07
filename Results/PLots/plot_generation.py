@@ -3,31 +3,28 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Données simulées
-#variable =  [0.02, 0.03, 0.04, 0.045, 0.05,0.055, 0.06, 0.065, 0.07, 0.075, 0.08] #lambda
+variable =  [0.02, 0.03, 0.04, 0.045, 0.05,0.055, 0.06, 0.065, 0.07, 0.075, 0.08] #lambda
 #variable = [45, 48, 50, 53, 55, 58, 60, 65, 70] #ressources
 #variable = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19] #slice
-variable = [50, 60, 70,80, 90, 100] #physical
+#variable = [50, 60, 70,80, 90, 100] #physical
 #Ressources
 #variable = [35, 40, 45, 50, 55, 60]
 
 # Calcul des valeurs moyennes pour les taux d'acceptation 
-'''
-Maxime = [0.56018, 0.6401, 0.6858399999999999, 0.77024, 0.7823799999999999, 0.86126]
-Nrpa_c = [0.3841800000000001, 0.32526, 0.27112, 0.23569999999999997, 0.1451, 0.09224]
-Nrpa = [0.00216, 0.00018, 0.0, 0.0, 0.0, 0.0]
-Nepa_c = [0.38404000000000005, 0.312, 0.23695999999999998, 0.21018000000000003, 0.12947999999999998, 0.06984]
-'''
+Maxime =   [1.0, 0.9732000000000001, 0.8014, 0.8413999999999999, 0.7998, 0.7442000000000001, 0.695, 0.5706, 0.6206, 0.5936, 0.5598]
+Nrpa_c = [0.5442, 0.5116, 0.4898, 0.4776, 0.4584, 0.447, 0.43539999999999995, 0.4308, 0.414, 0.4074, 0.38580000000000003]
+Nrpa=     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
 #REVENUES
-Maxime = [0.9949465858255697, 0.9198935824839911, 0.8525311170399699, 0.8443881634392039, 0.805311254649213, 0.849549979044809]
-Nrpa_c = [1.5029713049302043, 1.4930727376990085, 1.4781940042790065, 1.4486597263460521, 1.3772062760581267, 1.4093150788134803]
-Nrpa = [0.7277797795580058, 0.08843161515715807, 0.0, 0.0, 0.0, 0.0]
-Nepa_c = [1.4951261546357233, 1.4798327027340665, 1.4826654721255463, 1.4456845989471243, 1.3952683106107628, 1.3851398581035543]
+Maxime = [1.2767896318950167, 1.1607251256938267, 0.9462695346953858, 1.0246162452788845, 0.9870123918689853, 0.975006205023468, 0.9575121588910896, 0.8386424447143472, 0.904394801372588, 0.8977737226489981, 0.8959867669899386]
+Nrpa_c = [1.4783384932115553, 1.477905567517756, 1.48380026643336, 1.481563614625314, 1.4770497606874884, 1.4837332717065541, 1.488039626079948, 1.4869071870078145, 1.4853551878121452, 1.4795846231879213, 1.4932322151809378]
+Nrpa = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 # Création du plot
 plt.figure(figsize=(10, 5))
 plt.plot(variable, Maxime, marker='v', color='gray', linestyle='--', label='NEPA(Path)')
 #plt.plot(variable, Nepa_c, marker='x', color='#A9A9A9', linestyle='--', label='NEPA-DLPlus')
-plt.plot(variable, Nrpa_c, marker='s', color='#3357FF', linestyle='-', label='NRPA-DLPlus')
+plt.plot(variable, Nrpa_c, marker='s', color='#3357FF', linestyle='-', label='DL-ViNE')
 plt.plot(variable, Nrpa, marker='o', color='black', linestyle='-', label='NRPA-DL')
 
 
@@ -45,8 +42,8 @@ plt.xlabel('Size of physical network',fontsize=14)
 #plt.xlabel('Mean CPU on physical nodes',fontsize=14)
 #plt.xlabel('Mean ressources on physical network',fontsize=14)
 
-#plt.ylabel('Acceptance ratio', fontsize=14)
-plt.ylabel('Revenue-to-cost ratio', fontsize=14)
+plt.ylabel('Acceptance ratio', fontsize=14)
+#plt.ylabel('Revenue-to-cost ratio', fontsize=14)
 
 plt.legend().remove()
 #plt.legend(fontsize=18, loc='lower right', bbox_to_anchor=(1, 0.15))
