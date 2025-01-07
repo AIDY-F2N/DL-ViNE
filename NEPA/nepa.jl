@@ -7,7 +7,7 @@ include("refine.jl")
 include("checks.jl")
 include("nrpa_common.jl")
 
-function NRPA(sn::MetaGraph{Int64, Float64},
+function NEPA(sn::MetaGraph{Int64, Float64},
               vnr::MetaGraph{Int64, Float64}, 
               level::Int64, N::Int64, 
               policy::Union{DefaultDict{String, Float64, Float64}, Dict{String, Float64}}, 
@@ -37,7 +37,7 @@ function NRPA(sn::MetaGraph{Int64, Float64},
         best_score::Float64 = -9999
         best_seq = Int64[]
         for i = 1:N
-            reward, sequence = NRPA(sn, vnr, level - 1, N, policy, distances, solver, order_links, 
+            reward, sequence = NEPA(sn, vnr, level - 1, N, policy, distances, solver, order_links, 
                                     max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr, refined_solutions, 
                                     level_refine, num_its, distances_refine, num_moves_refine)
 
@@ -113,7 +113,7 @@ function run(instance_path,
             
             refined_solutions = Dict()
 
-            score, seq =  @time NRPA(sn, vnr_s, level, N, policy, distances, solver_sim, order_links, 
+            score, seq =  @time NEPA(sn, vnr_s, level, N, policy, distances, solver_sim, order_links, 
                                      max_bw_sn(sn), max_bw_vnr(vnr), sum_bw_sn(sn), sum_bw_vnr(vnr), 
                                      refined_solutions, level_refine, nv(vnr), precompute_distances(sn, 0), num_refines)
             println(test)
@@ -172,7 +172,7 @@ function run(instance_path,
         end
     end
     stats, glob_r_c = get_stats(scores, accepted)
-    print("********* Number of accepted slices using NEPA(path-based) = $accepted\n")
+    print("********* Number of accepted slices using NEPA(path) = $accepted\n")
 
     open(log_file,"a") do io
         print(io,accepted, ",", glob_r_c, ",")

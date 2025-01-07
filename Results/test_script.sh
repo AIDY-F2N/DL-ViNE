@@ -1,4 +1,4 @@
-echo "**************************** Variate BW in Complet graph 500 slices l=3  N=4 TEST RHO FIXED Window" >> instances/RHO_3_4.txt
+echo "**************************** Variate BW in Complete graph 500 slices l=3  N=5" >> instances/RHO_3_4.txt
 echo "- bw -15" >> instances/RHO_3_4.txt
 julia nepa.jl instances/completGraphe/bw-15 instances/RHO_3_4.txt 3 4 1
 julia nepa.jl instances/completGraphe/bw-15 instances/RHO_3_4.txt 3 4 2
