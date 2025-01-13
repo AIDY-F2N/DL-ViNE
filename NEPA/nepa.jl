@@ -86,7 +86,6 @@ function run(instance_path,
     global counter_refines = 0
     
     while !isempty(events)
-        println(arv)
         check_bounds_are_respected(sn)
         type::String, slice::Int64 = popfirst!(events)
         if type == "arrival"
@@ -116,7 +115,7 @@ function run(instance_path,
             score, seq =  @time NEPA(sn, vnr_s, level, N, policy, distances, solver_sim, order_links, 
                                      max_bw_sn(sn), max_bw_vnr(vnr), sum_bw_sn(sn), sum_bw_vnr(vnr), 
                                      refined_solutions, level_refine, nv(vnr), precompute_distances(sn, 0), num_refines)
-            println(test)
+            #println(test)
             if !haskey(scores, nv(vnr))
                 scores[nv(vnr)] = []
             end
@@ -144,14 +143,12 @@ function run(instance_path,
                 push!(future_leaves, slice)
 
                 accepted += 1
-                check_each_vn_uses_different_node(vnr)
                 check_each_vn_uses_resource_amount(sn, sn_prec, vnr)  
                 check_each_vl_uses_resource_amount(sn, sn_prec, vnr)  
             else
                 refused += 1
             end
 
-            clear_occupied!(sn)
         else
             if issubset([slice], future_leaves)
                 vnr = instance[slice]
@@ -176,23 +173,19 @@ function run(instance_path,
 
     open(log_file,"a") do io
         print(io,accepted, ",", glob_r_c, ",")
-        for (key,value) in stats
-            print(io, key,":",value,",")
-        end
-        print(io,N, ",", level,",", dist_heuristic,",", level_refine, ",", num_refines, ",", counter_refines,",")
     end
 end
 
-function main(instance_path, log_file, level, N, NRPAD, level_refine, num_refines, seed)
+function main(instance_path, log_file, level, N, seed)
     Random.seed!(seed)
     solver = place_links_sp
 
-    t = @elapsed run(instance_path, solver, solver, level, N, NRPAD, true, log_file, level_refine, num_refines) 
+    t = @elapsed run(instance_path, solver, solver, level, N, true, true, log_file, 3, 3) 
     open(log_file,"a") do io
-        println(io, "Execution time : ", t)
+        println(io, t)
     end
 end
 
 
 
-main(ARGS[1], ARGS[2], parse(Int64,ARGS[3]), parse(Int64, ARGS[4]), parse(Bool,ARGS[5]), parse(Int64,ARGS[6]), parse(Int64,ARGS[7]), parse(Int64,ARGS[8]))
+main(ARGS[1], ARGS[2], parse(Int64,ARGS[3]), parse(Int64, ARGS[4]), parse(Int64,ARGS[5]))

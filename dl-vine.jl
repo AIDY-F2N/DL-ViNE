@@ -84,6 +84,13 @@ function run_dl_vine(instance_path,
             score,seq =  @time DL_ViNE(sn, vnr, level, N, policy, linkPlacement,max_bw_sn(sn), 
                             max_bw_vnr(vnr), sum_bw_sn(sn), sum_bw_vnr(vnr))
 
+
+            if !haskey(scores, nv(vnr))
+                scores[nv(vnr)] = []
+            end
+                
+            push!(scores[nv(vnr)], score)
+                
             #println("Peut on utiliser futureSeq ? : $use_futureSeq")
             if score > 0
                 curr_node = 1
@@ -96,34 +103,6 @@ function run_dl_vine(instance_path,
                         vnr = vnr_2
                     end
                 end
-
-                if !haskey(scores, nv(vnr))
-                    scores[nv(vnr)] = []
-                end
-                
-                #Que pour l'affichage du vrai reward 
-                success=true
-                r::Float64=calculateReward(sn,vnr,success)
-                push!(scores[nv(vnr)], r)
-                #=
-                println("VNR numéro : $slice")
-                for e in edges(vnr)
-                    p = props(vnr, e)
-                    chemin=p[:vlink]
-                    len=length(chemin)
-                    println("Le chemin est : $chemin, lenght $len")
-                end=#
-
-                #=
-                println("SN AFTER VNE")
-                for v in 1:nv(sn)
-                    cpu_u=get_prop(sn,v,:cpu_used)
-                    cpu_m=get_prop(sn,v,:cpu_max)
-                    println("Noeud $v cpu used = $cpu_u, cpu max = $cpu_m")
-                end
-                =#
-                #println("Seq is : $seq ,Reward : $score, realREward : $r")
-
                 
                 instance[slice] = vnr
                 push!(future_leaves, slice)

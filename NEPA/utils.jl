@@ -17,7 +17,6 @@ function load_sn(filename::String)
     for i = 1:json_graph["n"]
         set_prop!(g, i, :cpu_max, json_graph["nodes_cap"][string(i-1)]::Int64)
         set_prop!(g, i, :cpu_used, 0::Int64) 
-        set_prop!(g, i, :occupied, 0::Int64)
     end
     
     for edge in json_graph["edges"]
@@ -188,7 +187,7 @@ function get_legal_moves(sn::MetaGraph{Int64, Float64}, vnr::MetaGraph{Int64, Fl
     legal_moves = []
      for i in 1:nv(sn)
         p = props(sn, i)
-        if p[:cpu_max] - p[:cpu_used] > get_prop(vnr, curr_node, :cpu) && p[:occupied] == 0 && bws_sn[i] >= bws_vnr[curr_node] && sum_bws_sn[i] >= sum_bws_vnr[curr_node]
+        if p[:cpu_max] - p[:cpu_used] > get_prop(vnr, curr_node, :cpu) && bws_sn[i] >= bws_vnr[curr_node] && sum_bws_sn[i] >= sum_bws_vnr[curr_node]
             push!(legal_moves, i)
         end
     end
@@ -205,7 +204,7 @@ function get_legal_moves(sn::MetaGraph{Int64, Float64}, vnr::MetaGraph{Int64, Fl
     legal_moves = []
      for i in 1:nv(sn)
         p = props(sn, i)
-        if p[:cpu_max] - p[:cpu_used] > get_prop(vnr, curr_node, :cpu) && p[:occupied] == 0# && bws_sn[i] >= bws_vnr[curr_node] && sum_bws_sn[i] >= sum_bws_vnr[curr_node]
+        if p[:cpu_max] - p[:cpu_used] > get_prop(vnr, curr_node, :cpu) # && bws_sn[i] >= bws_vnr[curr_node] && sum_bws_sn[i] >= sum_bws_vnr[curr_node]
             push!(legal_moves, i)
         end
     end
@@ -218,12 +217,6 @@ function remove!(a, item)
     if issubset([item], a)
         deleteat!(a, findfirst(x->x==item, a))
     end
-end
-
-function clear_occupied!(sn)
-    for i in 1:nv(sn)
-       set_prop!(sn, i, :occupied, 0)
-   end
 end
 
 

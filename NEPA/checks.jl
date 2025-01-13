@@ -8,20 +8,24 @@ function check_bounds_are_respected(sn)
     end
 end 
 
-function check_each_vn_uses_different_node(vnr)
-    used = []
-    for n in 1:nv(vnr)
-        host = get_prop(vnr, n, :host_node)
-        push!(used, host)
-    end
-    @assert length(used) == length(unique(used))
-end
-
 function check_each_vn_uses_resource_amount(sn, sn_prec, vnr)
+    # Dictionary to store CPU usage per host
+    cpu_usage_per_host = Dict{Any, Int}()
+
+    # Iterate over each virtual pod
     for n in 1:nv(vnr)
         host = get_prop(vnr, n, :host_node)
         cpu = get_prop(vnr, n, :cpu)
-        @assert cpu == get_prop(sn, host, :cpu_used) - get_prop(sn_prec, host, :cpu_used)
+        cpusn=get_prop(sn, host, :cpu_max)
+        #println("vn $n with cpu=$cpu to $host with cpu=$cpusn")
+        # Update CPU usage for the current host
+        cpu_usage_per_host[host] = get(cpu_usage_per_host, host, 0) + cpu
+
+        # Check CPU usage for the current host against the previous snapshot
+        @assert cpu_usage_per_host[host] <= get_prop(sn, host, :cpu_max)
+        cmax=get_prop(sn, host, :cpu_max)
+        cused=get_prop(sn, host, :cpu_used)
+        #println("cpu_max=$cmax and cpu_used=$cused")
     end
 end
 

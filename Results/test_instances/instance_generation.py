@@ -1,6 +1,5 @@
 import random
 import os
-import copy
 import networkx as nx
 import json
 

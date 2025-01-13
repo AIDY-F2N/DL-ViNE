@@ -48,7 +48,6 @@ function clear_sn_from_virtual_node!(sn::MetaGraph{Int64, Float64}, vnr::MetaGra
     for v in node:nv(vnr)
         p = props(vnr, v)
         set_prop!(sn, p[:host_node], :cpu_used, get_prop(sn, p[:host_node], :cpu_used) - p[:cpu])
-        set_prop!(sn, p[:host_node], :occupied, 0)
     end
     # free the BW
     for e in edges(vnr)
@@ -168,13 +167,12 @@ end
 
 function clear_cpu_used_by_node!(sn, node, cpu)
     set_prop!(sn, node, :cpu_used, get_prop(sn, node, :cpu_used) - cpu)
-    set_prop!(sn, node, :occupied, 0)
 end
 
 function get_legals(sn, cpu)
     legals = []
     for n in 1:nv(sn)
-        if get_prop(sn, n, :occupied) == 0 && get_prop(sn, n, :cpu_max) - get_prop(sn, n, :cpu_used) >= cpu
+        if get_prop(sn, n, :cpu_max) - get_prop(sn, n, :cpu_used) >= cpu
             push!(legals, n)
         end
     end
@@ -185,7 +183,6 @@ function place_node!(sn, vnr, move, vnode)
     prev_cpu = get_prop(sn, move, :cpu_used)
     cpu = get_prop(vnr, vnode, :cpu)
     set_prop!(sn, move, :cpu_used, prev_cpu + cpu)
-    set_prop!(sn, move, :occupied, 1)
 
     set_prop!(vnr, vnode, :host_node, move)
 end

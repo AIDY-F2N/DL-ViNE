@@ -1,4 +1,4 @@
-import numpy as np 
+
 
 data = """
 - physical 100_0
