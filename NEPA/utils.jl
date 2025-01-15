@@ -34,15 +34,7 @@ function load_vnr(filename::String)
     
     #if !order_nodes
     perm = 1:json_graph["n"]
-    """
-    else
-        cpu_list = Int64[]
-        for i = 1:json_graph["n"]
-            push!(cpu_list, json_graph["nodes_cap"][string(i-1)]::Int64)
-        end
-        perm = sortperm(cpu_list)
-    end
-    """
+
     for i in perm
         set_prop!(g, i, :cpu, json_graph["nodes_cap"][string(i-1)]::Int64)
     end
@@ -101,52 +93,6 @@ function calculateReward(sn, vnr, success)
     end
 end
 
-function calculateRewardMCTS(sn, vnr, success)
-    if success
-        used_resources::Float64 = 0
-        asked_resources::Float64 = 0
-
-        for (i, e) in enumerate(edges(vnr))
-            p = props(vnr, e)
-            asked_resources += p[:BW]
-            vlink::Dict{Tuple{Int64, Int64}, Float64} = p[:vlink]
-            for (k, v) in vlink
-                used_resources += v
-            end
-        end
-        for (i, v) in enumerate(vertices(vnr))
-            p = props(vnr, v)
-            used_resources += p[:cpu]
-            asked_resources += p[:cpu]
-        end
-        return asked_resources - used_resources
-    else
-        return typemin(Int32)
-    end
-end
-
-function calculateRewardAFBD(sn, vnr, success)
-    if success
-        used_BW = 0
-        for (i, e) in enumerate(edges(vnr))
-            p = props(vnr, e)
-            vlink::Dict{Tuple{Int64, Int64}, Float64} = p[:vlink]
-            for (k, v) in vlink
-                used_BW += v
-            end
-        end
-
-        sum_degs = 0
-        for (i, v) in enumerate(vertices(vnr))
-            p = props(vnr, v)
-            sum_degs += length(neighbors(sn, p[:host_node])) - length(neighbors(vnr, v))
-        end
-        return 1 / (sum_degs + used_BW)
-    else
-        return 0
-    end
-
-end
 
 # copying graphs with copy() is painfully slow, better to copy by hand
 function copy_graph(gr::MetaGraph{Int64, Float64})
@@ -180,10 +126,6 @@ function copy_graph!(source::MetaGraph{Int64, Float64}, dest::MetaGraph{Int64, F
 end
 
 function get_legal_moves(sn::MetaGraph{Int64, Float64}, vnr::MetaGraph{Int64, Float64}, curr_node::Int64, bws_sn, bws_vnr, sum_bws_sn, sum_bws_vnr)
-    #if haskey(known_legals::Dict{String, Vector{Int64}}, key)
-    #    println(1)
-    #    return known_legals[key]
-    #end
     legal_moves = []
      for i in 1:nv(sn)
         p = props(sn, i)
@@ -191,8 +133,6 @@ function get_legal_moves(sn::MetaGraph{Int64, Float64}, vnr::MetaGraph{Int64, Fl
             push!(legal_moves, i)
         end
     end
-    #known_legals[key] = legal_moves
-    #println(0)
     return legal_moves
 end
 
@@ -292,56 +232,6 @@ function reorder_vnr(vnr, sn, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
     return vnr_reordered
 end
 
-# sort by ascending order of bw + cpu
-function reorder_vnr_sp_mcts(vnr)
-    scores = []
-    vnr_reordered = MetaGraph(nv(vnr))
-    for i in 1:nv(vnr)
-        s = get_prop(vnr, i, :cpu)
-        for n in neighbors(vnr, i)
-            s += get_prop(vnr, i, n, :BW)
-        end
-        push!(scores, s)
-    end
-    indexes = sortperm(scores, rev=true)
-
-    for i in 1:nv(vnr)
-        set_prop!(vnr_reordered, i, :cpu, get_prop(vnr, indexes[i], :cpu))
-    end
-    for e in edges(vnr)
-        add_edge!(vnr_reordered, indexes[e.src], indexes[e.dst])
-        set_prop!(vnr_reordered, indexes[e.src], indexes[e.dst], :BW, get_prop(vnr, e.src, e.dst, :BW))
-        set_prop!(vnr_reordered, indexes[e.src], indexes[e.dst], :vlink, Dict{Tuple{Int64, Int64}, Float64}())
-    end
-    return vnr_reordered
-end
-
-# sort by ascending order of bw * cpu
-function reorder_vnr_uepso(vnr)
-    scores = []
-    vnr_reordered = MetaGraph(nv(vnr))
-    for i in 1:nv(vnr)
-        s = get_prop(vnr, i, :cpu)
-        bw = 0
-        for n in neighbors(vnr, i)
-            bw += get_prop(vnr, i, n, :BW)
-        end
-        s *= bw
-        push!(scores, s)
-    end
-    indexes = sortperm(scores, rev=true)
-
-    for i in 1:nv(vnr)
-        set_prop!(vnr_reordered, i, :cpu, get_prop(vnr, indexes[i], :cpu))
-    end
-    for e in edges(vnr)
-        add_edge!(vnr_reordered, indexes[e.src], indexes[e.dst])
-        set_prop!(vnr_reordered, indexes[e.src], indexes[e.dst], :BW, get_prop(vnr, e.src, e.dst, :BW))
-        set_prop!(vnr_reordered, indexes[e.src], indexes[e.dst], :vlink, Dict{Tuple{Int64, Int64}, Float64}())
-    end
-    return vnr_reordered
-end
-
 
 # glob_r_c = global revenue to cost ratio on scenario
 # stats[size][1] = r-t-c ratio for given size
@@ -416,3 +306,35 @@ function precompute_distances(sn, threshold)
     end
     return distances 
 end
+
+
+function default_weight!(policy, key)
+    policy[key] = 0
+end
+
+function default_weight!(policy, key, distances)
+    if distances == nothing
+        policy[key] = 0
+        return
+    end
+    if key == ""
+        policy[key] = 0
+    else
+        nodes = split(key, ",")
+        k = 0
+        # first "node" is always empty string, last one is the node we are trying to rate
+         for i in nodes[2:end-1]
+            k += distances[parse(Int64, nodes[end])][parse(Int64, i)]
+        end
+        policy[key] = -k / (length(nodes)-1)
+    end
+end
+
+
+function median_bw(vnr)
+    a = []
+    for e in edges(vnr)
+        push!(a, get_prop(vnr, e, :BW))
+    end
+    return median(a)
+end 

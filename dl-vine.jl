@@ -7,9 +7,10 @@ import JSON
 using Graphs, MetaGraphs, DataStructures, StatsBase, Random, Statistics, JLD2
 
 include("utils.jl")
-include("direct-link_mapping.jl")
+include("dlink.jl")
 include("checks.jl")
-include("node_mapping.jl")
+include("vne.jl")
+include("adapt.jl")
 
 function DL_ViNE(sn::MetaGraph{Int64, Float64},
     vnr::MetaGraph{Int64, Float64}, 

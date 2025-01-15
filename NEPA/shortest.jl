@@ -45,7 +45,6 @@ function parallel_shortest_path_bfs(g::MetaGraph{Int64, Float64}, start::Int64, 
 end
 
 
-# returns (new sn, new vnr, new curr_node, reward, state_is_final)
 function shortest_path_bfs(g::MetaGraph{Int64, Float64}, start::Int64, finish::Int64, threshold::Int64)
     finish_save = finish
     Q = Int64[start]
