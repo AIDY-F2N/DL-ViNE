@@ -20,7 +20,8 @@ function DL_ViNE(sn::MetaGraph{Int64, Float64},
     max_bw_sn,
     max_bw_vnr,
     sum_bw_sn,
-    sum_bw_vnr) 
+    sum_bw_vnr,
+    complete) 
 
     if level == 0
         # copying is slow
@@ -28,14 +29,14 @@ function DL_ViNE(sn::MetaGraph{Int64, Float64},
         # hence do not copy it as it consumes lots of time
         # as a result, after DL_ViNE, vnr contains the last calculated embedding, which is not the best one
 
-        score, sequence = VNE(copy_graph(sn), vnr, policy, solver, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
+        score, sequence = VNE(copy_graph(sn), vnr, policy, solver, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr, complete)
 
         return score, sequence
     else
         best_score::Float64 = -9999
         best_seq = Int64[]
         for i = 1:N
-            reward, sequence = DL_ViNE(sn, vnr, level - 1, N, policy, solver, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
+            reward, sequence = DL_ViNE(sn, vnr, level - 1, N, policy, solver, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr, complete)
                                     
             if reward > best_score
                 best_score = reward
@@ -61,7 +62,7 @@ function run_dl_vine(instance_path,
     # do not use DefaultDict as it will initialize all lists with different references to the same list
     scores = Dict{Int64, Vector{Any}}()
     
-    events, instance = load_instance(instance_path)
+    events, instance, complete = load_instance(instance_path)
     # sn loaded once
     sn = instance[-1]
     future_leaves = Int64[]
@@ -83,7 +84,7 @@ function run_dl_vine(instance_path,
          
 
             score,seq =  @time DL_ViNE(sn, vnr, level, N, policy, linkPlacement,max_bw_sn(sn), 
-                            max_bw_vnr(vnr), sum_bw_sn(sn), sum_bw_vnr(vnr))
+                            max_bw_vnr(vnr), sum_bw_sn(sn), sum_bw_vnr(vnr), complete)
 
 
             if !haskey(scores, nv(vnr))

@@ -81,5 +81,5 @@ The same applies to NEPA and NRPA-DL.
 
 ## Contact
 
-**Abdenour Yasser BRAHMI**  
+**Yasser BRAHMI**  
 Email: [abdenour-yasser.brahmi@telecom-sudparis.eu](mailto:abdenour-yasser.brahmi@telecom-sudparis.eu)

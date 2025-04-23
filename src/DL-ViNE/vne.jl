@@ -1,7 +1,7 @@
 include("bestFitNode.jl")
 include("dlink.jl")
 
-function VNE(sn, vnr, policy, solver::Function, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
+function VNE(sn, vnr, policy, solver::Function, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr, complete)
     sequence = []
     done::Bool = false
     curr_node = 1
@@ -21,7 +21,7 @@ function VNE(sn, vnr, policy, solver::Function, max_bw_sn, max_bw_vnr, sum_bw_sn
         legalMoves= get_legal_moves(sn, vnr, curr_node, max_bw_sn, max_bw_vnr, sum_bw_sn, sum_bw_vnr)
         normalWay = true
         for m in legalMoves
-            if bestFitNode(m,curr_node, vnr, sn)==true 
+            if bestFitNode(m,curr_node, vnr, sn, complete)==true 
                 normalWay = false
                 key_child = key * "," * string(m)
                 if !haskey(policy, key_child)

@@ -5,7 +5,7 @@ import numpy as np
 #RUNTIME ******************************************************************************
 # Averaged data
 algorithms = [ 'NEPA(path)', 'NRPA-DL', 'DL-ViNE']
-runtimes = [0.4567615895895636, 0.3574469684108364,  0.2832534573542909] 
+runtimes = [0.376048038, 0.232626163,  0.31947883] 
 
 fig, ax = plt.subplots(figsize=(8, 4))  
 

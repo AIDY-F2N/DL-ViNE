@@ -13,8 +13,15 @@ function parse(T::Type{Int64}, a::Int64)
 end
 
 function load_sn(filename::String)
+    complete=false
     json_graph = JSON.parsefile(filename)
     g = MetaGraph(json_graph["n"]);
+    nb_edges = json_graph["m"]
+    compelete_formul=(json_graph["n"] * (json_graph["n"]-1))/2
+    
+    if nb_edges == compelete_formul
+        complete=true
+    end
     
     for i = 1:json_graph["n"]
         set_prop!(g, i, :cpu_max, json_graph["nodes_cap"][string(i-1)]::Int64)
@@ -27,7 +34,7 @@ function load_sn(filename::String)
         set_prop!(g, parse(Int64, edge["e"][1])+1::Int64, parse(Int64, edge["e"][2])+1::Int64, :BW_used, 0::Int64)
     end
 
-    return g
+    return g, complete
 end
 
 function load_vnr(filename::String)
@@ -68,8 +75,8 @@ function load_instance(file_path::String)
             instance[number] = load_vnr(file_path * "/" * f)
         end
     end
-    instance[-1] = load_sn(file_path * "/test_network")
-    return events, instance
+    instance[-1], c = load_sn(file_path * "/test_network")
+    return events, instance, c
 end
 
 global nbr_good_sim = 0
