@@ -10,6 +10,22 @@ With Kubernetes becoming the leading container orchestration platform, most mode
 
 DL-ViNE (Direct Link Virtual Network Embedding) addresses this gap with a novel reinforcement learning-based algorithm tailored to the direct-link constraints of Kubernetes-hosted infrastructures. By leveraging slice specifications and intelligent node selection, DL-ViNE enhances slice acceptance rates, improves resource utilization, and optimizes runtime performance.
 
+If you use DL-ViNE or any part of this repository in your research, please **cite** the following publication:
+
+@inproceedings{brahmi:hal-05114918,
+  TITLE = {{DL-ViNE: Reinforcement Learning Algorithm for Efficient Virtual Network Embedding under Direct-Link Constraints}},
+  AUTHOR = {Brahmi, Abdenour Yasser and Aba, Massinissa Ait and Bouasker, Hadil and Jouaber, Badii and Castel-Taleb, Hind},
+  URL = {https://hal.science/hal-05114918},
+  BOOKTITLE = {{11th IEEE International Conference on Network Softwarization}},
+  ADDRESS = {Budapest, Hungary},
+  YEAR = {2025},
+  MONTH = Jun,
+  KEYWORDS = {5G Network Slicing RL VNE Kubernetes ; 5G ; Network Slicing ; RL ; VNE ; Kubernetes},
+  PDF = {https://hal.science/hal-05114918v1/file/NetSoft_2025_DL_ViNE.pdf},
+  HAL_ID = {hal-05114918},
+  HAL_VERSION = {v1},
+}
+
 ## Repository Structure
 
 The repository is organized as follows:
@@ -17,8 +33,6 @@ The repository is organized as follows:
 - **`src/`** – Contains the implementation of **DL-ViNE** along with the baseline algorithms **NEPA** and **NRPA-DL**.
 - **`testScenarios/`** – Includes test cases for **complete and incomplete SNs**, along with the Python script used for scenario generation.
 - **`results/`** – Stores both **numerical (logs) and visual (plots) results**, along with the Python scripts used to generate them.
-
-
 
 
 ## Prerequisites
