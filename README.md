@@ -10,8 +10,9 @@ With Kubernetes becoming the leading container orchestration platform, most mode
 
 DL-ViNE (Direct Link Virtual Network Embedding) addresses this gap with a novel reinforcement learning-based algorithm tailored to the direct-link constraints of Kubernetes-hosted infrastructures. By leveraging slice specifications and intelligent node selection, DL-ViNE enhances slice acceptance rates, improves resource utilization, and optimizes runtime performance.
 
-If you use DL-ViNE or any part of this repository in your research, please **cite** the following publication:
+If you use DL-ViNE or any part of this repository in your research, please **cite** the following publication (BibTeX format):
 
+```bibtex
 @inproceedings{brahmi:hal-05114918,
   TITLE = {{DL-ViNE: Reinforcement Learning Algorithm for Efficient Virtual Network Embedding under Direct-Link Constraints}},
   AUTHOR = {Brahmi, Abdenour Yasser and Aba, Massinissa Ait and Bouasker, Hadil and Jouaber, Badii and Castel-Taleb, Hind},
@@ -25,6 +26,8 @@ If you use DL-ViNE or any part of this repository in your research, please **cit
   HAL_ID = {hal-05114918},
   HAL_VERSION = {v1},
 }
+```
+
 
 ## Repository Structure
 
