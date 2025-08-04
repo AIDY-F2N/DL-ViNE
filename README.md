@@ -13,18 +13,16 @@ DL-ViNE (Direct Link Virtual Network Embedding) addresses this gap with a novel 
 If you use DL-ViNE or any part of this repository in your research, please **cite** the following publication (BibTeX format):
 
 ```bibtex
-@inproceedings{brahmi:hal-05114918,
-  TITLE = {{DL-ViNE: Reinforcement Learning Algorithm for Efficient Virtual Network Embedding under Direct-Link Constraints}},
-  AUTHOR = {Brahmi, Abdenour Yasser and Aba, Massinissa Ait and Bouasker, Hadil and Jouaber, Badii and Castel-Taleb, Hind},
-  URL = {https://hal.science/hal-05114918},
-  BOOKTITLE = {{11th IEEE International Conference on Network Softwarization}},
-  ADDRESS = {Budapest, Hungary},
-  YEAR = {2025},
-  MONTH = Jun,
-  KEYWORDS = {5G Network Slicing RL VNE Kubernetes ; 5G ; Network Slicing ; RL ; VNE ; Kubernetes},
-  PDF = {https://hal.science/hal-05114918v1/file/NetSoft_2025_DL_ViNE.pdf},
-  HAL_ID = {hal-05114918},
-  HAL_VERSION = {v1},
+@INPROCEEDINGS{11080579,
+  author={Brahmi, Abdenour Yasser and Ait Aba, Massinissa and Bouasker, Hadil and Jouaber, Badii and Castel-Taleb, Hind},
+  booktitle={2025 IEEE 11th International Conference on Network Softwarization (NetSoft)}, 
+  title={DL-ViNE: Reinforcement Learning Algorithm for Efficient Virtual Network Embedding Under Direct-Link Constraints}, 
+  year={2025},
+  volume={},
+  number={},
+  pages={448-452},
+  keywords={5G mobile communication;Network slicing;Clustering algorithms;Reinforcement learning;Quality of service;5G;Network Slicing;RL;VNE;Kubernetes},
+  doi={10.1109/NetSoft64993.2025.11080579}}
 }
 ```
 
